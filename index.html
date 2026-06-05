@@ -1,14 +1,746 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>وصال - تواصل بلا حدود</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>وصال - تواصل بلا حدود</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Cairo',sans-serif;}
+:root{
+  --green:#25d366;--dgreen:#128c7e;--bg:#0a1628;--sbg:#111b21;
+  --cbg:#0d1b2a;--bme:#1a3a2a;--bthem:#1e2d3d;
+  --text:#e9edef;--sub:#8696a0;--border:#1f2c34;
+}
+body{background:var(--bg);color:var(--text);overflow:hidden;height:100vh;}
+button{cursor:pointer;font-family:'Cairo',sans-serif;border:none;outline:none;}
+input{font-family:'Cairo',sans-serif;outline:none;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+
+/* ── SCREENS ── */
+.screen{display:none;width:100%;height:100vh;}
+.screen.active{display:flex;}
+
+/* SPLASH */
+#splash{align-items:center;justify-content:center;flex-direction:column;
+  background:linear-gradient(135deg,#0a1628,#0d2137,#0a1628);}
+.splash-logo{font-size:80px;font-weight:900;color:var(--green);
+  text-shadow:0 0 60px #25d36666;animation:fadeUp .8s ease both;}
+.splash-tag{color:var(--sub);font-size:18px;margin-top:8px;animation:fadeUp .8s .3s ease both;}
+.splash-dots{display:flex;gap:8px;margin-top:48px;animation:fadeUp .8s .5s ease both;}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--green);}
+.dot:nth-child(1){animation:bounce 1.2s ease infinite;}
+.dot:nth-child(2){animation:bounce 1.2s .2s ease infinite;}
+.dot:nth-child(3){animation:bounce 1.2s .4s ease infinite;}
+
+/* AUTH */
+#login,#otp{align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#0a1628,#0d2137);}
+.auth-card{background:var(--sbg);border-radius:24px;padding:40px;
+  width:90%;max-width:400px;border:1px solid var(--border);animation:fadeUp .5s ease;}
+.auth-logo{font-size:52px;font-weight:900;color:var(--green);text-align:center;margin-bottom:8px;}
+.auth-sub{color:var(--sub);text-align:center;font-size:15px;margin-bottom:28px;}
+.phone-row{display:flex;align-items:center;background:#1f2c34;
+  border-radius:12px;border:1px solid var(--border);margin-bottom:12px;}
+.phone-flag{padding:14px 12px;font-size:14px;color:var(--text);
+  border-left:1px solid var(--border);white-space:nowrap;}
+.phone-field{flex:1;background:transparent;border:none;color:var(--text);
+  font-size:16px;padding:14px;direction:ltr;}
+.auth-note{color:var(--sub);font-size:13px;text-align:center;margin-bottom:24px;}
+.btn-primary{width:100%;padding:16px;
+  background:linear-gradient(135deg,var(--green),var(--dgreen));
+  border-radius:12px;color:#fff;font-size:16px;font-weight:700;}
+.auth-footer{color:var(--sub);font-size:12px;text-align:center;margin-top:16px;}
+.link{color:var(--green);cursor:pointer;}
+.back-btn{background:none;color:var(--sub);font-size:14px;margin-bottom:16px;}
+.phone-show{color:var(--green);font-weight:700;font-size:18px;
+  text-align:center;direction:ltr;margin-bottom:20px;}
+.otp-row{display:flex;gap:8px;justify-content:center;margin-bottom:24px;direction:ltr;}
+.otp-box{width:48px;height:56px;background:#1f2c34;border:2px solid var(--border);
+  border-radius:12px;color:var(--text);font-size:24px;font-weight:700;
+  text-align:center;-moz-appearance:textfield;}
+.otp-box::-webkit-inner-spin-button{display:none;}
+.otp-box:focus{border-color:var(--green);}
+
+/* APP */
+#app{flex-direction:row;}
+
+/* SIDEBAR */
+.sidebar{width:360px;min-width:360px;background:var(--sbg);
+  display:flex;flex-direction:column;border-left:1px solid var(--border);}
+.s-header{display:flex;align-items:center;padding:12px 16px;gap:12px;
+  border-bottom:1px solid var(--border);}
+.my-av{width:40px;height:40px;border-radius:50%;
+  background:linear-gradient(135deg,var(--green),var(--dgreen));
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:700;font-size:16px;cursor:pointer;}
+.app-name{flex:1;font-size:22px;font-weight:900;color:var(--green);}
+.icon-btn{background:none;color:var(--sub);font-size:18px;padding:6px;border-radius:8px;}
+.tabs{display:flex;border-bottom:1px solid var(--border);}
+.tab{flex:1;display:flex;flex-direction:column;align-items:center;
+  padding:10px 4px;background:none;color:var(--sub);font-size:11px;
+  gap:2px;position:relative;border-bottom:2px solid transparent;transition:.2s;}
+.tab.active{color:var(--green);border-bottom-color:var(--green);}
+.tab-badge{position:absolute;top:6px;right:16px;background:var(--green);
+  color:#fff;border-radius:10px;font-size:10px;padding:1px 5px;font-weight:700;}
+.search-box{padding:8px 12px;border-bottom:1px solid var(--border);}
+.search-inp{width:100%;background:#1f2c34;border:none;border-radius:20px;
+  padding:8px 16px;color:var(--text);font-size:14px;}
+.s-content{flex:1;overflow-y:auto;}
+
+/* CONTACT ITEM */
+.contact{display:flex;align-items:center;padding:12px 16px;gap:12px;
+  cursor:pointer;border-bottom:1px solid #1f2c3411;transition:.15s;}
+.contact:hover,.contact.active{background:#1f2c34;}
+.av-wrap{position:relative;flex-shrink:0;}
+.av{width:50px;height:50px;border-radius:50%;
+  background:linear-gradient(135deg,var(--dgreen),#0d6b5e);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:700;font-size:16px;}
+.online-dot{position:absolute;bottom:2px;left:2px;width:12px;height:12px;
+  border-radius:50%;background:var(--green);border:2px solid var(--sbg);}
+.c-info{flex:1;min-width:0;}
+.c-top{display:flex;justify-content:space-between;margin-bottom:4px;}
+.c-name{font-weight:700;color:var(--text);font-size:15px;}
+.c-time{font-size:12px;color:var(--sub);flex-shrink:0;}
+.c-bot{display:flex;justify-content:space-between;align-items:center;}
+.c-msg{font-size:13px;color:var(--sub);overflow:hidden;
+  text-overflow:ellipsis;white-space:nowrap;flex:1;}
+.unread{background:var(--green);color:#fff;border-radius:50%;
+  width:20px;height:20px;display:flex;align-items:center;
+  justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-right:4px;}
+
+/* STORIES */
+.stories-tab{padding:8px 0;}
+.my-story{display:flex;align-items:center;padding:12px 16px;gap:14px;cursor:pointer;}
+.my-story-av{width:50px;height:50px;border-radius:50%;background:#1f2c34;
+  border:2px dashed var(--green);display:flex;align-items:center;justify-content:center;
+  font-size:22px;color:var(--green);}
+.sep{padding:8px 16px;font-size:12px;color:var(--sub);font-weight:600;
+  background:#0f1923;border-top:1px solid var(--border);}
+.story-item{display:flex;align-items:center;padding:10px 16px;gap:14px;cursor:pointer;}
+.story-ring{width:54px;height:54px;border-radius:50%;border:2.5px solid;
+  display:flex;align-items:center;justify-content:center;padding:2px;}
+.story-av{width:46px;height:46px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;}
+.s-name{font-weight:600;color:var(--text);font-size:14px;}
+.s-time{font-size:12px;color:var(--sub);}
+
+/* BOTTOM NAV */
+.bottom-nav{padding:8px 12px;border-top:1px solid var(--border);}
+.nav-btn{width:100%;background:none;color:var(--sub);padding:10px;
+  border-radius:10px;font-size:14px;text-align:right;}
+.nav-btn:hover{background:#1f2c34;color:var(--green);}
+
+/* CHAT AREA */
+.chat-area{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.no-chat{flex:1;display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:16px;background:var(--cbg);text-align:center;padding:40px;}
+.no-logo{font-size:72px;font-weight:900;color:#25d36622;}
+.no-title{font-size:26px;font-weight:700;}
+.no-sub{color:var(--sub);}
+.no-features{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px;}
+.no-feat{background:#1f2c34;border-radius:20px;padding:8px 16px;
+  color:var(--sub);font-size:13px;}
+
+/* CHAT WINDOW */
+.chat-win{display:flex;flex-direction:column;height:100%;background:var(--cbg);}
+.chat-header{display:flex;align-items:center;padding:10px 16px;gap:12px;
+  background:var(--sbg);border-bottom:1px solid var(--border);}
+.back-icon{background:none;color:var(--sub);font-size:20px;padding:4px 8px;}
+.ch-av{width:42px;height:42px;border-radius:50%;
+  background:linear-gradient(135deg,var(--dgreen),#0d6b5e);
+  display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;}
+.ch-info{flex:1;}
+.ch-name{font-weight:700;color:var(--text);font-size:16px;}
+.ch-status{font-size:13px;color:var(--sub);}
+.ch-actions{display:flex;gap:4px;}
+
+/* MESSAGES */
+.msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:4px;
+  background:radial-gradient(circle at 20% 80%,#0d2137 0%,transparent 50%),
+             radial-gradient(circle at 80% 20%,#071220 0%,transparent 50%),var(--cbg);}
+.date-div{text-align:center;color:var(--sub);font-size:12px;
+  background:#1f2c3488;border-radius:12px;padding:4px 16px;
+  align-self:center;margin:8px 0;}
+.msg-row{display:flex;margin-bottom:2px;}
+.bubble{max-width:65%;border-radius:12px;padding:8px 12px;}
+.bme{background:var(--bme);border-bottom-right-radius:4px;}
+.bthem{background:var(--bthem);border-bottom-left-radius:4px;}
+.msg-text{color:var(--text);font-size:15px;line-height:1.5;display:block;}
+.msg-time{font-size:11px;color:var(--sub);display:block;
+  text-align:left;margin-top:2px;direction:ltr;}
+.typing{display:flex;gap:4px;padding:4px 0;}
+.td{width:8px;height:8px;border-radius:50%;background:var(--sub);}
+.td:nth-child(1){animation:bounce 1s ease infinite;}
+.td:nth-child(2){animation:bounce 1s .2s ease infinite;}
+.td:nth-child(3){animation:bounce 1s .4s ease infinite;}
+
+/* INPUT */
+.inp-area{display:flex;align-items:center;padding:10px 12px;gap:8px;
+  background:var(--sbg);border-top:1px solid var(--border);}
+.attach-btn{background:none;font-size:22px;padding:4px;}
+.msg-inp{flex:1;background:#1f2c34;border:none;border-radius:24px;
+  padding:12px 18px;color:var(--text);font-size:15px;}
+.emoji-btn,.mic-btn{background:none;font-size:22px;padding:4px;}
+.send-btn{width:44px;height:44px;border-radius:50%;
+  background:linear-gradient(135deg,var(--green),var(--dgreen));
+  color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:.2s;}
+.send-btn:disabled{opacity:.4;}
+
+/* PROFILE */
+.profile-screen{flex:1;background:var(--cbg);overflow-y:auto;}
+.prof-header{display:flex;align-items:center;padding:16px 20px;gap:12px;
+  background:var(--sbg);border-bottom:1px solid var(--border);}
+.prof-title{color:var(--text);font-size:18px;font-weight:700;}
+.prof-av-sec{display:flex;flex-direction:column;align-items:center;padding:32px;gap:12px;}
+.prof-av{width:100px;height:100px;border-radius:50%;
+  background:linear-gradient(135deg,var(--green),var(--dgreen));
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:900;font-size:40px;}
+.change-photo{background:none;border:1px solid var(--green);color:var(--green);
+  border-radius:20px;padding:6px 16px;font-size:13px;}
+.prof-form{padding:0 20px 20px;}
+.form-grp{margin-bottom:16px;}
+.form-lbl{display:block;color:var(--green);font-size:13px;margin-bottom:6px;font-weight:600;}
+.form-inp{width:100%;background:#1f2c34;border:1px solid var(--border);
+  border-radius:12px;padding:14px 16px;color:var(--text);font-size:15px;}
+.save-btn{width:100%;padding:16px;
+  background:linear-gradient(135deg,var(--green),var(--dgreen));
+  border-radius:12px;color:#fff;font-size:16px;font-weight:700;margin-top:8px;}
+.fb-sec{margin:20px;background:#1a1a2e;border-radius:16px;padding:20px;
+  border:1px solid #ff6b0033;}
+.fb-title{color:#ff6b00;font-size:16px;font-weight:700;margin-bottom:8px;}
+.fb-note{color:var(--sub);font-size:13px;margin-bottom:12px;}
+.code-block{background:#0d0d1a;border-radius:10px;padding:16px;overflow:auto;}
+.code-block code{color:#7ee787;font-size:12px;line-height:1.8;
+  white-space:pre-wrap;font-family:monospace;}
+
+/* NOTIF */
+.notif{position:fixed;top:20px;left:50%;transform:translateX(-50%);
+  color:#fff;padding:12px 24px;border-radius:24px;font-size:14px;
+  font-weight:600;z-index:9999;box-shadow:0 8px 24px #0006;
+  animation:slideDown .3s ease;pointer-events:none;}
+
+/* MOBILE */
+@media(max-width:700px){
+  .sidebar{width:100%;min-width:unset;}
+  .chat-area{display:none;}
+  .sidebar.hide{display:none;}
+  .chat-area.show{display:flex;width:100%;}
+}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+@keyframes bounce{0%,80%,100%{transform:translateY(0);}40%{transform:translateY(-8px);}}
+@keyframes slideDown{from{opacity:0;transform:translateX(-50%) translateY(-20px);}to{opacity:1;transform:translateX(-50%) translateY(0);}}
+</style>
 </head>
-<body style="margin:0;padding:0;background:#0a1628;">
-  <div id="root"></div>
-  <script type="module" src="/src/main.jsx"></script>
+<body>
+
+<!-- SPLASH -->
+<div class="screen active" id="splash">
+  <div class="splash-logo">وصال</div>
+  <div class="splash-tag">تواصل بلا حدود</div>
+  <div class="splash-dots">
+    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div class="screen" id="login">
+  <div class="auth-card">
+    <div class="auth-logo">وصال</div>
+    <p class="auth-sub">أدخل رقم هاتفك للمتابعة</p>
+    <div class="phone-row">
+      <span class="phone-flag">🇪🇬 +20</span>
+      <input class="phone-field" id="phoneInput" type="tel" placeholder="01xxxxxxxxx" dir="ltr"/>
+    </div>
+    <p class="auth-note">سنرسل رمز تحقق إلى هذا الرقم</p>
+    <button class="btn-primary" onclick="goToOtp()">متابعة ←</button>
+    <p class="auth-footer">بالمتابعة أنت توافق على <span class="link">شروط الاستخدام</span></p>
+  </div>
+</div>
+
+<!-- OTP -->
+<div class="screen" id="otp">
+  <div class="auth-card">
+    <button class="back-btn" onclick="showScreen('login')">→ رجوع</button>
+    <div class="auth-logo">وصال</div>
+    <p class="auth-sub">أدخل رمز التحقق المرسل إلى</p>
+    <p class="phone-show" id="phoneShow"></p>
+    <div class="otp-row" id="otpRow">
+      <input class="otp-box" type="number" maxlength="1" oninput="otpMove(this,0)"/>
+      <input class="otp-box" type="number" maxlength="1" oninput="otpMove(this,1)"/>
+      <input class="otp-box" type="number" maxlength="1" oninput="otpMove(this,2)"/>
+      <input class="otp-box" type="number" maxlength="1" oninput="otpMove(this,3)"/>
+      <input class="otp-box" type="number" maxlength="1" oninput="otpMove(this,4)"/>
+      <input class="otp-box" type="number" maxlength="1" oninput="otpMove(this,5)"/>
+    </div>
+    <button class="btn-primary" onclick="verifyOtp()">تحقق من الرمز</button>
+    <p class="auth-note" style="margin-top:16px">لم تستلم الرمز؟ <span class="link">إعادة الإرسال</span></p>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="screen" id="app">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="s-header">
+      <div class="my-av" id="myAvatar" onclick="openProfile()">ط</div>
+      <span class="app-name">وصال</span>
+      <div style="display:flex;gap:4px;">
+        <button class="icon-btn">🔍</button>
+        <button class="icon-btn">⋮</button>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" id="tab-chats" onclick="switchTab('chats')">
+        <span>💬</span><span>المحادثات</span>
+        <span class="tab-badge" id="totalBadge"></span>
+      </button>
+      <button class="tab" id="tab-stories" onclick="switchTab('stories')">
+        <span>⭕</span><span>الحالات</span>
+      </button>
+      <button class="tab" id="tab-calls" onclick="switchTab('calls')">
+        <span>📞</span><span>المكالمات</span>
+      </button>
+    </div>
+
+    <div class="search-box" id="searchBox">
+      <input class="search-inp" placeholder="🔍 بحث في المحادثات..." oninput="filterContacts(this.value)"/>
+    </div>
+
+    <div class="s-content" id="sContent"></div>
+
+    <div class="bottom-nav">
+      <button class="nav-btn" onclick="openProfile()">⚙️ الإعدادات والملف الشخصي</button>
+    </div>
+  </div>
+
+  <!-- CHAT AREA -->
+  <div class="chat-area" id="chatArea">
+    <div class="no-chat" id="noChat">
+      <div class="no-logo">وصال</div>
+      <h2 class="no-title">مرحباً بك في وصال</h2>
+      <p class="no-sub">اختر محادثة من القائمة للبدء</p>
+      <div class="no-features">
+        <div class="no-feat">🔒 تشفير من طرف لطرف</div>
+        <div class="no-feat">⚡ رسائل فورية</div>
+        <div class="no-feat">🌍 العالم العربي</div>
+      </div>
+    </div>
+    <div class="chat-win" id="chatWin" style="display:none;"></div>
+    <div class="profile-screen" id="profileScreen" style="display:none;"></div>
+  </div>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════
+const contacts = [
+  {id:"1",name:"أحمد محمد",phone:"+201001234567",av:"أح",lastMsg:"كيف حالك يا صديقي؟",time:"10:30",unread:2,online:true},
+  {id:"2",name:"فاطمة علي",phone:"+201112345678",av:"فا",lastMsg:"شكراً جزيلاً 🙏",time:"09:15",unread:0,online:false},
+  {id:"3",name:"محمد العربي",phone:"+966501234567",av:"مح",lastMsg:"سنتحدث لاحقاً",time:"أمس",unread:5,online:false},
+  {id:"4",name:"سارة خالد",phone:"+971501234567",av:"سا",lastMsg:"صورة جميلة جداً! 😍",time:"أمس",unread:0,online:false},
+  {id:"5",name:"عمر حسين",phone:"+966551234567",av:"عم",lastMsg:"الكود شغال تمام",time:"12:00",unread:1,online:true},
+];
+
+const messages = {
+  "1":[
+    {id:"m1",from:"them",text:"السلام عليكم يا طارق! 👋",time:"10:20"},
+    {id:"m2",from:"me",text:"وعليكم السلام! كيف حالك؟",time:"10:22"},
+    {id:"m3",from:"them",text:"الحمد لله! إيه أخبار المشاريع؟",time:"10:25"},
+    {id:"m4",from:"me",text:"بنبني تطبيق شات عربي جديد 🔥",time:"10:27"},
+    {id:"m5",from:"them",text:"كيف حالك يا صديقي؟",time:"10:30"},
+  ],
+  "2":[
+    {id:"m1",from:"them",text:"صباح الخير يا طارق 🌸",time:"09:00"},
+    {id:"m2",from:"me",text:"صباح النور فاطمة!",time:"09:10"},
+    {id:"m3",from:"them",text:"شكراً جزيلاً 🙏",time:"09:15"},
+  ],
+  "3":[{id:"m1",from:"me",text:"متى نلتقي؟",time:"أمس"},{id:"m2",from:"them",text:"سنتحدث لاحقاً",time:"أمس"}],
+  "4":[{id:"m1",from:"them",text:"صورة جميلة جداً! 😍",time:"أمس"}],
+  "5":[
+    {id:"m1",from:"them",text:"شفت الكود الجديد؟",time:"11:55"},
+    {id:"m2",from:"me",text:"أيوه! الكود شغال تمام",time:"12:00"},
+  ],
+};
+
+const stories = [
+  {id:"s1",user:"أحمد",av:"أح",color:"#16a34a",seen:false,time:"منذ ساعة"},
+  {id:"s2",user:"فاطمة",av:"فا",color:"#ea580c",seen:false,time:"منذ ساعتين"},
+  {id:"s3",user:"محمد",av:"مح",color:"#0891b2",seen:true,time:"منذ 5 ساعات"},
+  {id:"s4",user:"سارة",av:"سا",color:"#7c3aed",seen:true,time:"منذ يوم"},
+];
+
+const replies = ["👍","حسناً، فهمت!","جميل جداً","شكراً لك 😊","سأرد عليك قريباً","تمام تمام 🔥","ممتاز!","صح كلامك"];
+
+let activeChat = null;
+let userName = "طارق";
+let userStatus = "متاح للتحدث 👋";
+let userPhone = "";
+let activeTab = "chats";
+let isTyping = false;
+
+// ══════════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function showNotif(msg, type="success"){
+  const n = document.createElement('div');
+  n.className = 'notif';
+  n.style.background = type==="error"?"#dc2626":"#16a34a";
+  n.textContent = msg;
+  document.body.appendChild(n);
+  setTimeout(()=>n.remove(), 3000);
+}
+
+function now(){
+  return new Date().toLocaleTimeString('ar',{hour:'2-digit',minute:'2-digit'});
+}
+
+function getTotalUnread(){
+  return contacts.reduce((a,c)=>a+c.unread,0);
+}
+
+// ══════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════
+function goToOtp(){
+  const ph = document.getElementById('phoneInput').value;
+  if(ph.length < 8){showNotif("أدخل رقم صحيح","error");return;}
+  userPhone = ph;
+  document.getElementById('phoneShow').textContent = "+20 " + ph;
+  showScreen('otp');
+  showNotif("تم إرسال رمز التحقق ✓");
+}
+
+function otpMove(el, idx){
+  const boxes = document.querySelectorAll('.otp-box');
+  if(el.value.length > 1) el.value = el.value.slice(-1);
+  if(el.value && idx < 5) boxes[idx+1].focus();
+}
+
+function verifyOtp(){
+  const boxes = document.querySelectorAll('.otp-box');
+  const code = Array.from(boxes).map(b=>b.value).join('');
+  if(code.length < 6){showNotif("أدخل الرمز كاملاً","error");return;}
+  showScreen('app');
+  renderContacts(contacts);
+  updateBadge();
+  showNotif("مرحباً بك في وصال! 🎉");
+}
+
+// ══════════════════════════════════════════
+// TABS
+// ══════════════════════════════════════════
+function switchTab(tab){
+  activeTab = tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('searchBox').style.display = tab==='chats'?'block':'none';
+
+  if(tab==='chats') renderContacts(contacts);
+  else if(tab==='stories') renderStories();
+  else if(tab==='calls') renderCalls();
+}
+
+// ══════════════════════════════════════════
+// CONTACTS
+// ══════════════════════════════════════════
+function renderContacts(list){
+  const el = document.getElementById('sContent');
+  el.innerHTML = list.map(c=>`
+    <div class="contact ${activeChat?.id===c.id?'active':''}" onclick="openChat('${c.id}')">
+      <div class="av-wrap">
+        <div class="av">${c.av}</div>
+        ${c.online?'<div class="online-dot"></div>':''}
+      </div>
+      <div class="c-info">
+        <div class="c-top">
+          <span class="c-name">${c.name}</span>
+          <span class="c-time">${c.time}</span>
+        </div>
+        <div class="c-bot">
+          <span class="c-msg">${c.lastMsg}</span>
+          ${c.unread>0?`<span class="unread">${c.unread}</span>`:''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterContacts(q){
+  const filtered = contacts.filter(c=>c.name.includes(q)||c.phone.includes(q));
+  renderContacts(filtered);
+}
+
+function updateBadge(){
+  const total = getTotalUnread();
+  const badge = document.getElementById('totalBadge');
+  badge.textContent = total > 0 ? total : '';
+  badge.style.display = total > 0 ? 'block' : 'none';
+}
+
+// ══════════════════════════════════════════
+// STORIES
+// ══════════════════════════════════════════
+function renderStories(){
+  const el = document.getElementById('sContent');
+  const unseen = stories.filter(s=>!s.seen);
+  const seen = stories.filter(s=>s.seen);
+  el.innerHTML = `
+    <div class="stories-tab">
+      <div class="my-story">
+        <div class="my-story-av">+</div>
+        <div><div class="s-name">حالتي</div><div class="s-time">أضف حالة جديدة</div></div>
+      </div>
+      <div class="sep">المشاهدة غير المكتملة</div>
+      ${unseen.map(s=>`
+        <div class="story-item">
+          <div class="story-ring" style="border-color:${s.color}">
+            <div class="story-av" style="background:${s.color};font-size:16px;">${s.av}</div>
+          </div>
+          <div><div class="s-name">${s.user}</div><div class="s-time">${s.time}</div></div>
+        </div>
+      `).join('')}
+      <div class="sep">المشاهدة المكتملة</div>
+      ${seen.map(s=>`
+        <div class="story-item">
+          <div class="story-ring" style="border-color:#555">
+            <div class="story-av" style="background:#555;font-size:16px;">${s.av}</div>
+          </div>
+          <div><div class="s-name">${s.user}</div><div class="s-time">${s.time}</div></div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════
+// CALLS
+// ══════════════════════════════════════════
+function renderCalls(){
+  document.getElementById('sContent').innerHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:200px;gap:8px;">
+      <div style="font-size:40px;">📞</div>
+      <p style="color:var(--sub);">لا توجد مكالمات حديثة</p>
+      <p style="color:var(--sub);font-size:13px;">مكالمات الصوت والفيديو قادمة قريباً</p>
+    </div>
+  `;
+}
+
+// ══════════════════════════════════════════
+// CHAT
+// ══════════════════════════════════════════
+function openChat(id){
+  activeChat = contacts.find(c=>c.id===id);
+  const ci = contacts.find(c=>c.id===id);
+  ci.unread = 0;
+  updateBadge();
+  renderContacts(contacts);
+
+  document.getElementById('noChat').style.display = 'none';
+  document.getElementById('profileScreen').style.display = 'none';
+  document.getElementById('chatWin').style.display = 'flex';
+  document.getElementById('chatWin').style.flexDirection = 'column';
+
+  // Mobile
+  document.getElementById('sidebar').classList.remove('hide');
+  if(window.innerWidth<=700){
+    document.getElementById('sidebar').classList.add('hide');
+    document.getElementById('chatArea').classList.add('show');
+  }
+
+  renderChatWin();
+}
+
+function renderChatWin(){
+  const c = activeChat;
+  const msgs = messages[c.id] || [];
+  document.getElementById('chatWin').innerHTML = `
+    <div class="chat-header">
+      <button class="back-icon" onclick="backToList()">←</button>
+      <div class="ch-av">${c.av}</div>
+      <div class="ch-info">
+        <div class="ch-name">${c.name}</div>
+        <div class="ch-status" id="chatStatus">${c.online?'متصل الآن 🟢':'آخر ظهور: منذ ساعة'}</div>
+      </div>
+      <div class="ch-actions">
+        <button class="icon-btn">📞</button>
+        <button class="icon-btn">📹</button>
+        <button class="icon-btn">⋮</button>
+      </div>
+    </div>
+    <div class="msgs" id="msgsArea">
+      <div class="date-div">اليوم</div>
+      ${msgs.map(m=>bubbleHTML(m)).join('')}
+    </div>
+    <div class="inp-area">
+      <button class="attach-btn">📎</button>
+      <input class="msg-inp" id="msgInput" placeholder="اكتب رسالة..."
+        onkeydown="if(event.key==='Enter')sendMsg()"/>
+      <button class="emoji-btn">😊</button>
+      <button class="mic-btn">🎙️</button>
+      <button class="send-btn" id="sendBtn" onclick="sendMsg()" disabled>←</button>
+    </div>
+  `;
+  document.getElementById('msgInput').addEventListener('input', function(){
+    document.getElementById('sendBtn').disabled = !this.value.trim();
+  });
+  scrollBottom();
+}
+
+function bubbleHTML(m){
+  const isMe = m.from==='me';
+  return `
+    <div class="msg-row" style="justify-content:${isMe?'flex-start':'flex-end'}">
+      <div class="bubble ${isMe?'bme':'bthem'}">
+        <span class="msg-text">${m.text}</span>
+        <span class="msg-time">${m.time}${isMe?' ✓✓':''}</span>
+      </div>
+    </div>
+  `;
+}
+
+function sendMsg(){
+  const inp = document.getElementById('msgInput');
+  const text = inp.value.trim();
+  if(!text || !activeChat) return;
+
+  const msg = {id:'m'+Date.now(),from:'me',text,time:now()};
+  if(!messages[activeChat.id]) messages[activeChat.id]=[];
+  messages[activeChat.id].push(msg);
+
+  const c = contacts.find(x=>x.id===activeChat.id);
+  c.lastMsg = text; c.time = 'الآن';
+
+  inp.value = '';
+  document.getElementById('sendBtn').disabled = true;
+
+  const area = document.getElementById('msgsArea');
+  area.insertAdjacentHTML('beforeend', bubbleHTML(msg));
+  scrollBottom();
+
+  // Typing indicator
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'msg-row';
+  typingDiv.style.justifyContent = 'flex-end';
+  typingDiv.id = 'typingIndicator';
+  typingDiv.innerHTML = `<div class="bubble bthem"><div class="typing"><div class="td"></div><div class="td"></div><div class="td"></div></div></div>`;
+  area.appendChild(typingDiv);
+  document.getElementById('chatStatus').innerHTML = '<span style="color:var(--green)">يكتب...</span>';
+  scrollBottom();
+
+  setTimeout(()=>{
+    const ti = document.getElementById('typingIndicator');
+    if(ti) ti.remove();
+    document.getElementById('chatStatus').textContent = c.online?'متصل الآن 🟢':'آخر ظهور: منذ ساعة';
+
+    const reply = {id:'m'+Date.now(),from:'them',text:replies[Math.floor(Math.random()*replies.length)],time:now()};
+    messages[activeChat.id].push(reply);
+    area.insertAdjacentHTML('beforeend', bubbleHTML(reply));
+    scrollBottom();
+    renderContacts(contacts);
+  }, 1200+Math.random()*800);
+}
+
+function scrollBottom(){
+  const area = document.getElementById('msgsArea');
+  if(area) area.scrollTop = area.scrollHeight;
+}
+
+function backToList(){
+  activeChat = null;
+  document.getElementById('chatWin').style.display = 'none';
+  document.getElementById('noChat').style.display = 'flex';
+  document.getElementById('sidebar').classList.remove('hide');
+  document.getElementById('chatArea').classList.remove('show');
+}
+
+// ══════════════════════════════════════════
+// PROFILE
+// ══════════════════════════════════════════
+function openProfile(){
+  document.getElementById('noChat').style.display = 'none';
+  document.getElementById('chatWin').style.display = 'none';
+  document.getElementById('profileScreen').style.display = 'block';
+
+  if(window.innerWidth<=700){
+    document.getElementById('sidebar').classList.add('hide');
+    document.getElementById('chatArea').classList.add('show');
+  }
+
+  document.getElementById('profileScreen').innerHTML = `
+    <div class="prof-header">
+      <button class="back-icon" onclick="closeProfile()">←</button>
+      <span class="prof-title">الملف الشخصي</span>
+    </div>
+    <div class="prof-av-sec">
+      <div class="prof-av" id="profAv">${userName[0]||'ط'}</div>
+      <button class="change-photo">تغيير الصورة</button>
+    </div>
+    <div class="prof-form">
+      <div class="form-grp">
+        <label class="form-lbl">الاسم</label>
+        <input class="form-inp" id="editName" value="${userName}" placeholder="اسمك الكامل"/>
+      </div>
+      <div class="form-grp">
+        <label class="form-lbl">الحالة</label>
+        <input class="form-inp" id="editStatus" value="${userStatus}" placeholder="اكتب حالتك..."/>
+      </div>
+      <div class="form-grp">
+        <label class="form-lbl">رقم الهاتف</label>
+        <input class="form-inp" value="${userPhone?'+20 '+userPhone:'+20 01xxxxxxxxx'}" disabled dir="ltr" style="opacity:.6"/>
+      </div>
+      <button class="save-btn" onclick="saveProfile()">حفظ التغييرات</button>
+    </div>
+    <div class="fb-sec">
+      <div class="fb-title">🔥 إعداد Firebase للرسائل الحقيقية</div>
+      <p class="fb-note">لتفعيل الرسائل بين المستخدمين الحقيقيين:</p>
+      <div class="code-block"><code>1. console.firebase.google.com
+2. أنشئ مشروعاً جديداً مجاناً
+3. فعّل: Authentication → Phone
+4. فعّل: Realtime Database
+5. فعّل: Storage
+6. انسخ الـ config في الكود</code></div>
+    </div>
+  `;
+}
+
+function saveProfile(){
+  userName = document.getElementById('editName').value || userName;
+  userStatus = document.getElementById('editStatus').value || userStatus;
+  document.getElementById('myAvatar').textContent = userName[0];
+  showNotif("تم حفظ الملف الشخصي ✓");
+  closeProfile();
+}
+
+function closeProfile(){
+  document.getElementById('profileScreen').style.display = 'none';
+  document.getElementById('noChat').style.display = 'flex';
+  document.getElementById('sidebar').classList.remove('hide');
+  document.getElementById('chatArea').classList.remove('show');
+  activeChat = null;
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+setTimeout(()=>{
+  showScreen('login');
+}, 2200);
+</script>
 </body>
 </html>
